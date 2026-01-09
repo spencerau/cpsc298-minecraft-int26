@@ -45,23 +45,43 @@ public class ExampleMod {
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "examplemod" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
 
-    // Creates a new Block with the id "examplemod:example_block", combining the namespace and path
-    public static final DeferredBlock<Block> EXAMPLE_BLOCK = BLOCKS.registerSimpleBlock("example_block", BlockBehaviour.Properties.of().mapColor(MapColor.STONE));
-    // Creates a new BlockItem with the id "examplemod:example_block", combining the namespace and path
-    public static final DeferredItem<BlockItem> EXAMPLE_BLOCK_ITEM = ITEMS.registerSimpleBlockItem("example_block", EXAMPLE_BLOCK);
+    // BLOCKS
 
-    // Creates a new food item with the id "examplemod:example_id", nutrition 1 and saturation 2
-    public static final DeferredItem<Item> EXAMPLE_ITEM = ITEMS.registerSimpleItem("example_item", new Item.Properties().food(new FoodProperties.Builder()
-            .alwaysEdible().nutrition(1).saturationModifier(2f).build()));
+    // NOTE: Copy one of these blocks to make a new one
+    public static final DeferredBlock<Block> CHEESE_BLOCK = BLOCKS.registerSimpleBlock("cheese_block",
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_YELLOW)
+                    .strength(0.5f, 6.0f) // Hardness, Resistance
+                    .lightLevel(state -> 4) // Emits light level 10
+                    .sound(net.minecraft.world.level.block.SoundType.STONE) // Stone sound when stepped on or broken
+    );
 
+    public static final DeferredItem<BlockItem> CHEESE_BLOCK_ITEM =
+            ITEMS.registerSimpleBlockItem("cheese_block", CHEESE_BLOCK);
+
+    public static final DeferredBlock<Block> RUBIKS_BLOCK = BLOCKS.registerSimpleBlock("rubiks_block",
+            BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.COLOR_BLUE)
+                    .strength(0.5f, 6.0f) // Hardness, Resistance
+                    .lightLevel(state -> 4) // Emits light level 10
+                    .sound(net.minecraft.world.level.block.SoundType.STONE) // Stone sound when stepped on or broken
+    );
+    public static final DeferredItem<BlockItem> RUBIKS_BLOCK_ITEM =
+            ITEMS.registerSimpleBlockItem("rubiks_block", RUBIKS_BLOCK);
+
+    // CREATIVE TABS
+
+    // NOTE: Add your block item below like "output.accept(CHEESE_BLOCK_ITEM.get())"
     // Creates a creative tab with the id "examplemod:example_tab" for the example item, that is placed after the combat tab
-    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
-            .title(Component.translatable("itemGroup.examplemod")) //The language key for the title of your CreativeModeTab
-            .withTabsBefore(CreativeModeTabs.COMBAT)
-            .icon(() -> EXAMPLE_ITEM.get().getDefaultInstance())
-            .displayItems((parameters, output) -> {
-                output.accept(EXAMPLE_ITEM.get()); // Add the example item to the tab. For your own tabs, this method is preferred over the event
-            }).build());
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> EXAMPLE_TAB =
+            CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
+                    .title(Component.translatable("itemGroup.examplemod")) // The translation key for the tab title
+                    .withTabsBefore(CreativeModeTabs.COMBAT)
+                    .icon(() -> CHEESE_BLOCK_ITEM.get().getDefaultInstance())
+                    .displayItems((parameters, output) -> {
+                        output.accept(CHEESE_BLOCK_ITEM.get()); // Your custom block item
+                        output.accept(RUBIKS_BLOCK_ITEM.get());
+                    }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
     // FML will recognize some parameter types like IEventBus or ModContainer and pass them in automatically.
@@ -104,7 +124,7 @@ public class ExampleMod {
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
-            event.accept(EXAMPLE_BLOCK_ITEM);
+            event.accept(CHEESE_BLOCK_ITEM);
         }
     }
 
