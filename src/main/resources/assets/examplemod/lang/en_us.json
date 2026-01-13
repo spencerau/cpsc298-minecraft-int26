@@ -12,5 +12,6 @@
   "examplemod.configuration.magicNumber": "Magic Number",
 
   "block.examplemod.cheese_block": "Cheese Block",
-  "block.examplemod.rubiks_block": "Rubiks Block"
+  "block.examplemod.rubiks_block": "Rubiks Block",
+  "block.examplemod.corgi_dispenser_block": "Corgi Dispenser Block"
 }
