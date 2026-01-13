@@ -22,3 +22,6 @@ gradle-app.setting
 .idea
 
 run
+.eclipse
+.vscode
+bin
