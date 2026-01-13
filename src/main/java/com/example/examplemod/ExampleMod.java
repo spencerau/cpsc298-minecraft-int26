@@ -69,6 +69,17 @@ public class ExampleMod {
     public static final DeferredItem<BlockItem> RUBIKS_BLOCK_ITEM =
             ITEMS.registerSimpleBlockItem("rubiks_block", RUBIKS_BLOCK);
 
+    public static final DeferredBlock<Block> CORGI_DISPENSER_BLOCK = BLOCKS.registerSimpleBlock("corgi_dispenser_block",
+        BlockBehaviour.Properties.of()
+            .mapColor(MapColor.COLOR_YELLOW)
+            .strength(0.5f, 6.0f) // Hardness, Resistance
+            .lightLevel(state -> 4) // Emits light level 10
+            .sound(net.minecraft.world.level.block.SoundType.STONE) // Stone sound when stepped on or broken
+    );
+
+    public static final DeferredItem<BlockItem> CORGI_DISPENSER_BLOCK_ITEM =
+        ITEMS.registerSimpleBlockItem("corgi_dispenser_block", CORGI_DISPENSER_BLOCK);
+
     // CREATIVE TABS
 
     // NOTE: Add your block item below like "output.accept(CHEESE_BLOCK_ITEM.get())"
@@ -77,10 +88,11 @@ public class ExampleMod {
             CREATIVE_MODE_TABS.register("example_tab", () -> CreativeModeTab.builder()
                     .title(Component.translatable("itemGroup.examplemod")) // The translation key for the tab title
                     .withTabsBefore(CreativeModeTabs.COMBAT)
-                    .icon(() -> CHEESE_BLOCK_ITEM.get().getDefaultInstance())
+                    .icon(() -> CORGI_DISPENSER_BLOCK_ITEM.get().getDefaultInstance())
                     .displayItems((parameters, output) -> {
                         output.accept(CHEESE_BLOCK_ITEM.get()); // Your custom block item
                         output.accept(RUBIKS_BLOCK_ITEM.get());
+                        output.accept(CORGI_DISPENSER_BLOCK_ITEM.get()); // Your custom block item
                     }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
