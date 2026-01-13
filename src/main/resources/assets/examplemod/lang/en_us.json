@@ -13,5 +13,8 @@
 
   "block.examplemod.cheese_block": "Cheese Block",
   "block.examplemod.rubiks_block": "Rubiks Block",
-  "block.examplemod.corgi_dispenser_block": "Corgi Dispenser Block"
+  "block.examplemod.corgi_dispenser_block": "Corgi Dispenser Block",
+  "block.examplemod.boom_block": "Boom Block",
+  "item.examplemod.op_pickaxe": "OP Pickaxe",
+  "item.examplemod.cheese_item": "Cheese Item"
 }
