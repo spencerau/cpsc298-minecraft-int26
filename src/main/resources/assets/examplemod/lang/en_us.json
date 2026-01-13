@@ -16,5 +16,6 @@
   "block.examplemod.corgi_dispenser_block": "Corgi Dispenser Block",
   "block.examplemod.boom_block": "Boom Block",
   "item.examplemod.op_pickaxe": "OP Pickaxe",
-  "item.examplemod.cheese_item": "Cheese Item"
+  "item.examplemod.cheese_item": "Cheese Item",
+  "item.examplemod.dupont_pickaxe": "Yes, this is a Dupont Pickaxe"
 }

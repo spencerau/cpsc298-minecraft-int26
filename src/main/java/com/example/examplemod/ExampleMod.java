@@ -124,6 +124,19 @@ public class ExampleMod {
             )
         );
 
+    public static final DeferredItem<Item> DUPONT_PICKAXE =
+        ITEMS.register("dupont_pickaxe", registryName ->
+            new Item(new Item.Properties()
+                .setId(ResourceKey.create(Registries.ITEM, registryName))
+                .durability(9999)
+                .pickaxe(
+                    GOD_TIER,
+                    99.0F,   // Attack Damage
+                    1.6F     // Attack Speed
+                )
+            )
+        );
+
     public static final DeferredItem<Item> CHEESE_ITEM =
         ITEMS.register("cheese", registryName ->
         new CheeseItem(new Item.Properties()
@@ -153,6 +166,7 @@ public class ExampleMod {
                         output.accept(BOOM_BLOCK_ITEM.get());
                         output.accept(OP_PICKAXE.get());
                         output.accept(CHEESE_ITEM.get());
+                        output.accept(DUPONT_PICKAXE.get());
                     }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.

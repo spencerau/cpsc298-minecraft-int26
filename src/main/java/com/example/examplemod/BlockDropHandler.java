@@ -18,8 +18,8 @@ public class BlockDropHandler {
         BlockPos pos = event.getPos();
         BlockState state = event.getState();
 
-        // if (!level.isClientSide && state.is(ExampleMod.CORGI_DISPENSER_BLOCK.get())) {
-        //     Block.popResource((ServerLevel) level, pos, new ItemStack(Items.RED_DYE));
-        // }
+        if (!level.isClientSide && state.is(ExampleMod.CORGI_DISPENSER_BLOCK.get())) {
+            Block.popResource((ServerLevel) level, pos, new ItemStack(Items.RED_DYE));
+        }
     }
 }
