@@ -12,10 +12,14 @@
   "examplemod.configuration.magicNumber": "Magic Number",
 
   "block.examplemod.cheese_block": "Cheese Block",
-  "block.examplemod.rubiks_block": "Rubiks Block",
+  "block.examplemod.rubiks_block": "Rubik's Block",
   "block.examplemod.corgi_dispenser_block": "Corgi Dispenser Block",
   "block.examplemod.boom_block": "Boom Block",
   "item.examplemod.op_pickaxe": "OP Pickaxe",
   "item.examplemod.cheese_item": "Cheese Item",
-  "item.examplemod.dupont_pickaxe": "Yes, this is a Dupont Pickaxe"
+  "item.examplemod.dupont_pickaxe": "Yes, this is a Dupont Pickaxe",
+
+  "item.examplemod.transmutation_wand_handle": "Transmutation Wand Handle",
+  "item.examplemod.transmutation_wand_head": "Transmutation Wand Head",
+  "item.examplemod.transmutation_wand": "Transmutation Wand"
 }

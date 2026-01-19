@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "pattern": [
+    " H ",
+    " S ",
+    " S "
+  ],
+  "key": {
+    "H": "examplemod:transmutation_wand_head",
+    "S": "examplemod:transmutation_wand_handle"
+  },
+  "result": {
+    "id": "examplemod:transmutation_wand",
+    "count": 1
+  },
+  "show_notification": true
+}

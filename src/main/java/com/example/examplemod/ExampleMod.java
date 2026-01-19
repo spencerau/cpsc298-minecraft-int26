@@ -9,6 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
@@ -39,6 +40,9 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+
+import net.minecraft.sounds.SoundEvent;
+
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(ExampleMod.MODID)
@@ -150,6 +154,37 @@ public class ExampleMod {
         )
     );
 
+    public static final DeferredItem<Item> TRANSMUTATION_WAND_HANDLE =
+		ITEMS.register("transmutation_wand_handle", registryName ->
+		    new Item(new Item.Properties()
+		        .setId(ResourceKey.create(Registries.ITEM, registryName))
+		    )
+		);
+
+    public static final DeferredItem<Item> TRANSMUTATION_WAND_HEAD =
+        ITEMS.register("transmutation_wand_head", registryName ->
+            new Item(new Item.Properties()
+                .setId(ResourceKey.create(Registries.ITEM, registryName))
+            )
+        );
+        
+    public static final DeferredItem<Item> TRANSMUTATION_WAND =
+        ITEMS.register("transmutation_wand", registryName ->
+            new Item(new Item.Properties()
+                .setId(ResourceKey.create(Registries.ITEM, registryName))
+            )
+        );
+
+    // sounds
+    public static final DeferredRegister<SoundEvent> SOUNDS =
+            DeferredRegister.create(Registries.SOUND_EVENT, "examplemod");
+
+    public static final DeferredHolder<SoundEvent, SoundEvent> CORGI_BARK =
+        SOUNDS.register("corgi_bark", () ->
+            SoundEvent.createVariableRangeEvent(
+                ResourceLocation.fromNamespaceAndPath("examplemod",
+                    "corgi_bark")));
+
     // CREATIVE TABS
 
     // NOTE: Add your block item below like "output.accept(CHEESE_BLOCK_ITEM.get())"
@@ -167,6 +202,9 @@ public class ExampleMod {
                         output.accept(OP_PICKAXE.get());
                         output.accept(CHEESE_ITEM.get());
                         output.accept(DUPONT_PICKAXE.get());
+                        output.accept(TRANSMUTATION_WAND.get());
+                        output.accept(TRANSMUTATION_WAND_HANDLE.get());
+                        output.accept(TRANSMUTATION_WAND_HEAD.get());
                     }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
@@ -174,6 +212,20 @@ public class ExampleMod {
     public ExampleMod(IEventBus modEventBus, ModContainer modContainer) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
+
+        // Register our custom block drop handler        
+        NeoForge.EVENT_BUS.register(BlockDropHandler.class);
+        // Register our interactions handler        
+        NeoForge.EVENT_BUS.register(PlayerInteractions.class);
+
+        // Register your sounds
+        SOUNDS.register(modEventBus);
+
+        // Register your keybinding listener to mod event bus
+		Keybinder.register(modEventBus);
+		
+		// Register game event listener
+		Keybinder.registerGameEvents();
 
         // Register the Deferred Register to the mod event bus so blocks get registered
         BLOCKS.register(modEventBus);
@@ -186,6 +238,9 @@ public class ExampleMod {
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
+
+//        NeoForge.EVENT_BUS.register(BlockDropHandler.class);
+//        NeoForge.EVENT_BUS.register(PlayerInteractions.class);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);

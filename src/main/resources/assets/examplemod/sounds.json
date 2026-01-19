@@ -1,0 +1,8 @@
+{
+  "corgi_bark": {
+    "category": "neutral",
+    "sounds": [
+      { "name": "examplemod:corgi_bark", "volume": 1.0, "pitch": 1.0 }
+    ]
+  }
+}
