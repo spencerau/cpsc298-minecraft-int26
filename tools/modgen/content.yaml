@@ -48,6 +48,31 @@ items:
     texture: transmutation_wand
     stack_size: 1
     custom_class: true
+    transmutations:
+      - from: minecraft:copper_ore
+        to: minecraft:iron_ore
+        message: "Transmuted Copper → Iron!"
+      - from: minecraft:iron_ore
+        to: minecraft:gold_ore
+        message: "Transmuted Iron → Gold!"
+      - from: minecraft:gold_ore
+        to: minecraft:netherite_block
+        message: "Transmuted Gold → Netherite!"
+      - from: minecraft:netherite_block
+        to: examplemod:cheese_block
+        message: "Transmuted Netherite → Cheese!"
+      - from: examplemod:cheese_block
+        to: minecraft:copper_ore
+        message: "Transmuted Cheese → Copper!"
+      - from: minecraft:lapis_ore
+        to: minecraft:diamond_ore
+        message: "Transmuted Lapis → Diamond!"
+      - from: minecraft:diamond_ore
+        to: minecraft:emerald_ore
+        message: "Transmuted Diamond → Emerald!"
+      - from: minecraft:emerald_ore
+        to: minecraft:lapis_ore
+        message: "Transmuted Emerald → Lapis!"
 
   - id: transmutation_wand_handle
     display_name: Transmutation Wand Handle

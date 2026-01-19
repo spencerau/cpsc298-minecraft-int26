@@ -1,9 +1,11 @@
 {
   "_comment": "{{ autogen_comment }}",
   "type": "minecraft:crafting_shapeless",
+  "category": "misc",
   "ingredients": {{ ingredients | tojson }},
   "result": {
     "id": "{{ modid }}:{{ result }}",
     "count": {{ count }}
-  }
+  },
+  "show_notification": true
 }

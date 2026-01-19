@@ -31,7 +31,9 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+// NEED THIS FOR THE MOD AUTOMATION
 import com.example.examplemod.generated.GeneratedRegistries;
+import com.example.examplemod.generated.PlayerInteractions;
 
 // The value here should match an entry in the META-INF/neoforge.mods.toml file
 @Mod(ExampleMod.MODID)
@@ -85,6 +87,10 @@ public class ExampleMod {
         // Note that this is necessary if and only if we want *this* class (ExampleMod) to respond directly to events.
         // Do not add this line if there are no @SubscribeEvent-annotated functions in this class, like onServerStarting() below.
         NeoForge.EVENT_BUS.register(this);
+        
+        // Register our player interactions handler
+        // NEED THIS FOR THE MOD AUTOMATION
+        NeoForge.EVENT_BUS.register(PlayerInteractions.class);
 
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);

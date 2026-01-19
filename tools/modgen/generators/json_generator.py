@@ -188,8 +188,9 @@ class JSONGenerator:
                     if 'item' in value:
                         item = value['item']
                         if ':' not in item:
-                            value = {'item': f"{self.modid}:{item}"}
-                        processed_key[char] = value
+                            processed_key[char] = f"{self.modid}:{item}"
+                        else:
+                            processed_key[char] = item
                     else:
                         processed_key[char] = value
                 
@@ -208,9 +209,9 @@ class JSONGenerator:
                     if 'item' in ingredient:
                         item = ingredient['item']
                         if ':' not in item:
-                            processed_ingredients.append({'item': f"{self.modid}:{item}"})
+                            processed_ingredients.append(f"{self.modid}:{item}")
                         else:
-                            processed_ingredients.append(ingredient)
+                            processed_ingredients.append(item)
                     else:
                         processed_ingredients.append(ingredient)
                 

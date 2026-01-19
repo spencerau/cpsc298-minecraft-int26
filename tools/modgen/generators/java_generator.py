@@ -30,6 +30,7 @@ class JavaGenerator:
         self.generate_registries_class(items, blocks)
         self.generate_creative_tabs_class(creative_tab, items, blocks)
         self.generate_custom_stubs(items, blocks)
+        self.generate_player_interactions(items, blocks)
     
     def generate_items_class(self, items: List[Dict]):
         template = self.env.get_template('GeneratedItems.java.j2')
@@ -261,3 +262,64 @@ class JavaGenerator:
             props.append(f"sound(SoundType.{block['sound_type'].upper()})")
         
         return "BlockBehaviour.Properties.of()" + ('.' + '.'.join(props) if props else '')
+    
+    def generate_player_interactions(self, items: List[Dict], blocks: List[Dict]):
+        """Generate PlayerInteractions class for transmutation wands and other item interactions"""
+        template = self.env.get_template('PlayerInteractions.java.j2')
+        
+        # Collect all transmutations from items
+        transmutations = []
+        has_transmutations = False
+        
+        for item in items:
+            if 'transmutations' in item:
+                has_transmutations = True
+                for trans in item['transmutations']:
+                    from_block = trans['from']
+                    to_block = trans['to']
+                    
+                    # Parse block references (minecraft:copper_ore or examplemod:cheese_block)
+                    if ':' in from_block:
+                        from_ns, from_id = from_block.split(':', 1)
+                        if from_ns == 'minecraft':
+                            from_ref = f"Blocks.{from_id.upper()}"
+                        else:
+                            # Check if it's a block (in blocks list)
+                            is_block = any(b['id'] == from_id for b in blocks)
+                            if is_block:
+                                from_ref = f"GeneratedBlocks.{from_id.upper()}.get()"
+                            else:
+                                from_ref = f"GeneratedItems.{from_id.upper()}.get()"
+                    else:
+                        from_ref = f"Blocks.{from_block.upper()}"
+                    
+                    if ':' in to_block:
+                        to_ns, to_id = to_block.split(':', 1)
+                        if to_ns == 'minecraft':
+                            to_ref = f"Blocks.{to_id.upper()}"
+                        else:
+                            # Check if it's a block (in blocks list)
+                            is_block = any(b['id'] == to_id for b in blocks)
+                            if is_block:
+                                to_ref = f"GeneratedBlocks.{to_id.upper()}.get()"
+                            else:
+                                to_ref = f"GeneratedItems.{to_id.upper()}.get()"
+                    else:
+                        to_ref = f"Blocks.{to_block.upper()}"
+                    
+                    transmutations.append({
+                        'from_ref': from_ref,
+                        'to_ref': to_ref,
+                        'message': trans['message']
+                    })
+        
+        code = template.render(
+            base_package=self.base_package,
+            mod_class=self.mod_class,
+            has_transmutations=has_transmutations,
+            transmutations=transmutations
+        )
+        
+        path = self.java_src / "generated" / "PlayerInteractions.java"
+        utils.write_file(path, code)
+
