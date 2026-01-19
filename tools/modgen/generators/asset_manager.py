@@ -36,8 +36,10 @@ class AssetManager:
                 src = self.source_assets / "textures/block" / tex_file
                 dest = self.target_assets / "textures/block" / tex_file
                 self._copy_asset(src, dest)
-                item_dest = self.target_assets / "textures/item" / tex_file
-                self._copy_asset(src, item_dest)
+                item_filename = Path(tex_file).name
+                item_src = self.source_assets / "textures/block" / tex_file
+                item_dest = self.target_assets / "textures/item" / item_filename
+                self._copy_asset(item_src, item_dest)
     
     def copy_sounds(self, items: List[Dict], blocks: List[Dict]):
         print("\nCopying sounds...")

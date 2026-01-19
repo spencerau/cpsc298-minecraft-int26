@@ -7,6 +7,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+
+import javax.annotation.Nullable;
 
 public class {{ class_name }} extends Block {
     
@@ -27,6 +32,16 @@ public class {{ class_name }} extends Block {
 
     public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
         entity.causeFallDamage(fallDistance, {{ method.fall_damage_multiplier }}f, level.damageSources().fall());
+    }
+{% elif method.name == 'playerDestroy' %}
+
+    @Override
+    public void playerDestroy(Level level, Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
+        super.playerDestroy(level, player, pos, state, blockEntity, tool);
+        if (!level.isClientSide) {
+            level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 
+                {{ method.explosion.power }}f, Level.ExplosionInteraction.BLOCK);
+        }
     }
 {% endif %}
 {% endfor %}

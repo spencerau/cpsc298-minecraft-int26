@@ -11,6 +11,20 @@ items:
       nutrition: 4
       saturation: 0.5
     custom_class: true
+    behavior:
+      on_finish_eating:
+        effects:
+          - type: speed
+            duration: 300
+            amplifier: 3
+          - type: glowing
+            duration: 300
+            amplifier: 1
+          - type: jump_boost
+            duration: 300
+            amplifier: 5
+      on_use:
+        lightning: true
 
   - id: op_pickaxe
     display_name: OP Pickaxe
@@ -98,7 +112,23 @@ blocks:
     hardness: 1.0
     resistance: 30.0
     drops: self
-    custom_class: true
+    behavior:
+      explosion:
+        power: 3.0
+        interaction: block
+
+  - id: rubiks_block
+    display_name: Rubiks Block
+    textures:
+      down: rubiks_block/rubiks_block_white
+      up: rubiks_block/rubiks_block_yellow
+      north: rubiks_block/rubiks_block_green
+      south: rubiks_block/rubiks_block_blue
+      west: rubiks_block/rubiks_block_orange
+      east: rubiks_block/rubiks_block_red
+    hardness: 2.0
+    resistance: 3.0
+    drops: self
 
 recipes:
   - id: transmutation_wand_recipe
@@ -109,9 +139,9 @@ recipes:
       - " A "
     key:
       H:
-        item: cpsc298minecraft:transmutation_wand_head
+        item: transmutation_wand_head
       A:
-        item: cpsc298minecraft:transmutation_wand_handle
+        item: transmutation_wand_handle
     result: transmutation_wand
 
   - id: cheese_block_from_cheese
@@ -122,13 +152,13 @@ recipes:
       - "CCC"
     key:
       C:
-        item: cpsc298minecraft:cheese
+        item: cheese
     result: cheese_block
 
   - id: cheese_from_cheese_block
     type: shapeless
     ingredients:
-      - item: cpsc298minecraft:cheese_block
+      - item: cheese_block
     result: cheese
     count: 9
 

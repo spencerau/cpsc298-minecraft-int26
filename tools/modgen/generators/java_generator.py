@@ -136,10 +136,30 @@ class JavaGenerator:
             item_id = item['id']
             class_name = utils.to_camel_case(item_id) + "Item"
             
+            behavior = item.get('behavior')
+            behavior_methods = []
+            if behavior:
+                if 'on_finish_eating' in behavior:
+                    effects = behavior['on_finish_eating'].get('effects', [])
+                    if effects:
+                        behavior_methods.append({
+                            'name': 'finishUsingItem',
+                            'effects': effects
+                        })
+                
+                if 'on_use' in behavior:
+                    on_use = behavior['on_use']
+                    if on_use.get('lightning'):
+                        behavior_methods.append({
+                            'name': 'use',
+                            'action': 'summon_lightning'
+                        })
+            
             code = template.render(
                 package=self.custom_pkg,
                 class_name=class_name,
-                item_id=item_id
+                item_id=item_id,
+                behavior_methods=behavior_methods
             )
             
             path = self.java_src / "custom" / f"{class_name}.java"
@@ -156,15 +176,27 @@ class JavaGenerator:
             class_name = utils.to_camel_case(block_id) + "Block"
             
             behavior_methods = []
-            if behavior and 'bounce_strength' in behavior:
-                behavior_methods.append({
-                    'name': 'stepOn',
-                    'bounce_strength': behavior['bounce_strength']
-                })
-                behavior_methods.append({
-                    'name': 'fallOn',
-                    'fall_damage_multiplier': behavior.get('fall_damage_multiplier', 0.0)
-                })
+            if behavior:
+                if 'bounce_strength' in behavior:
+                    behavior_methods.append({
+                        'name': 'stepOn',
+                        'bounce_strength': behavior['bounce_strength']
+                    })
+                    behavior_methods.append({
+                        'name': 'fallOn',
+                        'fall_damage_multiplier': behavior.get('fall_damage_multiplier', 0.0)
+                    })
+                
+                if 'explosion' in behavior:
+                    explosion = behavior['explosion']
+                    behavior_methods.append({
+                        'name': 'playerDestroy',
+                        'explosion': {
+                            'power': explosion.get('power', 2.0),
+                            'fire': explosion.get('fire', False),
+                            'destroy_blocks': explosion.get('destroy_blocks', True)
+                        }
+                    })
             
             code = template.render(
                 package=self.custom_pkg,

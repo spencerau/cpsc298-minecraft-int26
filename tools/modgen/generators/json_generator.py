@@ -181,22 +181,44 @@ class JSONGenerator:
                 if missing:
                     print(f"  [WARN] Shaped recipe '{recipe_id}' missing key entries for: {missing}; skipping.")
                     continue
+            
             if recipe_type == 'shaped':
+                processed_key = {}
+                for char, value in recipe['key'].items():
+                    if 'item' in value:
+                        item = value['item']
+                        if ':' not in item:
+                            value = {'item': f"{self.modid}:{item}"}
+                        processed_key[char] = value
+                    else:
+                        processed_key[char] = value
+                
                 template = self.jinja_env.get_template('shaped_recipe.json.j2')
                 content = template.render(
                     autogen_comment=config.JSON_AUTOGEN_COMMENT,
                     modid=self.modid,
                     pattern=recipe['pattern'],
-                    key=recipe['key'],
+                    key=processed_key,
                     result=recipe['result'],
                     count=recipe.get('count', 1)
                 )
             elif recipe_type == 'shapeless':
+                processed_ingredients = []
+                for ingredient in recipe['ingredients']:
+                    if 'item' in ingredient:
+                        item = ingredient['item']
+                        if ':' not in item:
+                            processed_ingredients.append({'item': f"{self.modid}:{item}"})
+                        else:
+                            processed_ingredients.append(ingredient)
+                    else:
+                        processed_ingredients.append(ingredient)
+                
                 template = self.jinja_env.get_template('shapeless_recipe.json.j2')
                 content = template.render(
                     autogen_comment=config.JSON_AUTOGEN_COMMENT,
                     modid=self.modid,
-                    ingredients=recipe['ingredients'],
+                    ingredients=processed_ingredients,
                     result=recipe['result'],
                     count=recipe.get('count', 1)
                 )
