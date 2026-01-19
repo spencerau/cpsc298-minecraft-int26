@@ -1,0 +1,11 @@
+{
+  "_comment": "{{ autogen_comment }}"
+{%- for sound in sounds %},
+  "{{ sound.id }}": {
+    "subtitle": "sound.{{ modid }}.{{ sound.id }}",
+    "sounds": [
+      "{{ modid }}:{{ sound.file }}"
+    ]
+  }
+{%- endfor %}
+}

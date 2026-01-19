@@ -1,0 +1,16 @@
+{
+  "_comment": "{{ autogen_comment }}",
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+{%- if textures.all %}
+    "all": "{{ modid }}:block/{{ textures.all }}"
+{%- else %}
+    "north": "{{ modid }}:block/{{ textures.north }}",
+    "south": "{{ modid }}:block/{{ textures.south }}",
+    "east": "{{ modid }}:block/{{ textures.east }}",
+    "west": "{{ modid }}:block/{{ textures.west }}",
+    "up": "{{ modid }}:block/{{ textures.up }}",
+    "down": "{{ modid }}:block/{{ textures.down }}"
+{%- endif %}
+  }
+}

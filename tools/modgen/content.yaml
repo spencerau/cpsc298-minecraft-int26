@@ -1,0 +1,142 @@
+modid: examplemod
+base_package: com.example.examplemod
+mod_class: ExampleMod
+
+items:
+  - id: cheese
+    display_name: Cheese
+    texture: cheese
+    stack_size: 64
+    food:
+      nutrition: 4
+      saturation: 0.5
+    custom_class: true
+
+  - id: op_pickaxe
+    display_name: OP Pickaxe
+    texture: op_pickaxe
+    stack_size: 1
+    custom_class: true
+
+  - id: transmutation_wand
+    display_name: Transmutation Wand
+    texture: transmutation_wand
+    stack_size: 1
+    custom_class: true
+
+  - id: transmutation_wand_handle
+    display_name: Transmutation Wand Handle
+    texture: transmutation_wand_handle
+    stack_size: 64
+
+  - id: transmutation_wand_head
+    display_name: Transmutation Wand Head
+    texture: transmutation_wand_head
+    stack_size: 64
+
+blocks:
+  - id: linstead_block
+    display_name: Linstead Block
+    textures:
+      all: linstead_block
+    hardness: 2.0
+    resistance: 3.0
+    drops: self
+
+  - id: mouse_block
+    display_name: Mouse Block
+    textures:
+      all: mouse_block
+    hardness: 2.0
+    resistance: 3.0
+    drops: self
+
+  - id: lol_block
+    display_name: LOL Block
+    textures:
+      all: lol_block
+    hardness: 3.0
+    resistance: 3.0
+    light_level: 15
+    drops: self
+
+  - id: cheese_block
+    display_name: Cheese Block
+    textures:
+      all: cheese_block
+    hardness: 2.0
+    resistance: 3.0
+    light_level: 15
+    drops: cheese
+
+  - id: trampoline_block
+    display_name: Trampoline Block
+    textures:
+      all: trampoline_block
+    hardness: 1.0
+    resistance: 2.0
+    light_level: 0
+    behavior:
+      bounce_strength: 1.3
+      fall_damage_multiplier: 0.3
+    drops: self
+
+  - id: corgi_dispenser_block
+    display_name: Corgi Dispenser Block
+    textures:
+      all: corgi_dispenser_block
+    hardness: 1.0
+    resistance: 6.0
+    light_level: 10
+    sound_type: stone
+    drops: self
+
+  - id: boom_block
+    display_name: Boom Block
+    textures:
+      all: boom_block
+    hardness: 1.0
+    resistance: 30.0
+    drops: self
+    custom_class: true
+
+recipes:
+  - id: transmutation_wand_recipe
+    type: shaped
+    pattern:
+      - " H "
+      - " A "
+      - " A "
+    key:
+      H:
+        item: cpsc298minecraft:transmutation_wand_head
+      A:
+        item: cpsc298minecraft:transmutation_wand_handle
+    result: transmutation_wand
+
+  - id: cheese_block_from_cheese
+    type: shaped
+    pattern:
+      - "CCC"
+      - "CCC"
+      - "CCC"
+    key:
+      C:
+        item: cpsc298minecraft:cheese
+    result: cheese_block
+
+  - id: cheese_from_cheese_block
+    type: shapeless
+    ingredients:
+      - item: cpsc298minecraft:cheese_block
+    result: cheese
+    count: 9
+
+creative_tab:
+  id: custom_items_2
+  display_name: Custom Items
+  icon: linstead_block
+
+sounds:
+  - id: corgi_bark
+    file: corgi_bark

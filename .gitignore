@@ -25,3 +25,9 @@ run
 .eclipse
 .vscode
 bin
+.DS_Store
+
+# python stuff
+.venv
+__pycache__/
+*.pyc

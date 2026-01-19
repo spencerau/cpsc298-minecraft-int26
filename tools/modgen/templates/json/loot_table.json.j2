@@ -1,0 +1,24 @@
+{
+  "_comment": "{{ autogen_comment }}",
+  "type": "minecraft:block",
+{%- if drops_type == 'nothing' %}
+  "pools": []
+{%- else %}
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "{{ modid }}:{{ drops_item }}"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+{%- endif %}
+}
