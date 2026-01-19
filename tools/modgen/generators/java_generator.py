@@ -34,13 +34,32 @@ class JavaGenerator:
     def generate_items_class(self, items: List[Dict]):
         template = self.env.get_template('GeneratedItems.java.j2')
         
+        tool_materials = []
+        seen_materials = set()
+        for item in items:
+            if 'tool' in item and 'material' in item['tool']:
+                mat = item['tool']['material']
+                mat_name = mat.get('name', f"{item['id'].upper()}_MATERIAL")
+                if mat_name not in seen_materials:
+                    tool_materials.append({
+                        'name': mat_name,
+                        'incorrect_for_tag': mat.get('incorrect_for_tag', 'INCORRECT_FOR_NETHERITE_TOOL'),
+                        'durability': mat.get('durability', 1561),
+                        'speed': mat.get('speed', 8.0),
+                        'attack_bonus': mat.get('attack_bonus', 3.0),
+                        'enchantability': mat.get('enchantability', 15),
+                        'repair_tag': mat.get('repair_tag', 'PLANKS')
+                    })
+                    seen_materials.add(mat_name)
+        
         items_data = []
         for item in items:
             item_data = {
                 'id': item['id'],
                 'var_name': item['id'].upper(),
                 'props': self._build_item_properties(item),
-                'custom_class': utils.to_camel_case(item['id']) + "Item" if item.get('custom_class') else None
+                'custom_class': utils.to_camel_case(item['id']) + "Item" if item.get('custom_class') else None,
+                'tool': item.get('tool')
             }
             items_data.append(item_data)
         
@@ -49,7 +68,8 @@ class JavaGenerator:
             base_package=self.base_package,
             modid=self.modid,
             mod_class=self.mod_class,
-            items=items_data
+            items=items_data,
+            tool_materials=tool_materials
         )
         
         path = self.java_src / "generated" / "GeneratedItems.java"
@@ -209,6 +229,13 @@ class JavaGenerator:
             utils.write_file(path, code, overwrite=False)
     
     def _build_item_properties(self, item: Dict) -> str:
+        if 'tool' in item:
+            tool = item['tool']
+            if 'material' in tool:
+                mat_name = tool['material'].get('name', f"{item['id'].upper()}_MATERIAL")
+                durability = tool['material'].get('durability', 1561)
+                return f"new Item.Properties().durability({durability})"
+        
         props = []
         if 'stack_size' in item:
             props.append(f"stacksTo({item['stack_size']})")
@@ -221,6 +248,7 @@ class JavaGenerator:
             props.append(f"food(new FoodProperties.Builder().nutrition({nutrition}).saturationModifier({saturation}f).build())")
         
         return "new Item.Properties()" + ('.' + '.'.join(props) if props else '')
+
     
     def _build_block_properties(self, block: Dict) -> str:
         props = []

@@ -14,12 +14,52 @@ import {{ base_package }}.{{ mod_class }};
 {% for item in items %}{% if item.custom_class %}
 import {{ base_package }}.custom.{{ item.custom_class }};
 {% endif %}{% endfor %}
+{% if tool_materials %}
+import net.minecraft.world.item.ToolMaterial;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+{% endif %}
 
 public class GeneratedItems {
     private static final DeferredRegister.Items ITEMS = {{ mod_class }}.ITEMS;
     
+{% if tool_materials %}
+    // Tool Materials
+{% for material in tool_materials %}
+    public static final ToolMaterial {{ material.name }} = new ToolMaterial(
+        BlockTags.{{ material.incorrect_for_tag }},
+        {{ material.durability }},
+        {{ material.speed }}F,
+        {{ material.attack_bonus }}F,
+        {{ material.enchantability }},
+        ItemTags.{{ material.repair_tag }}
+    );
+{% endfor %}
+
+{% endif %}
 {% for item in items %}
-{% if item.custom_class %}
+{% if item.tool %}
+{% set tool = item.tool %}
+{% set mat_name = tool.material.name if tool.material else (item.var_name + '_MATERIAL') %}
+    public static final DeferredItem<Item> {{ item.var_name }} = ITEMS.register("{{ item.id }}", registryName ->
+        new Item({{ item.props }}
+            .setId(ResourceKey.create(Registries.ITEM, registryName))
+{% if tool.type == 'pickaxe' %}
+            .pickaxe({{ mat_name }}, {{ tool.attack_damage }}F, {{ tool.attack_speed }}F)
+{% elif tool.type == 'axe' %}
+            .axe({{ mat_name }}, {{ tool.attack_damage }}F, {{ tool.attack_speed }}F)
+{% elif tool.type == 'shovel' %}
+            .shovel({{ mat_name }}, {{ tool.attack_damage }}F, {{ tool.attack_speed }}F)
+{% elif tool.type == 'hoe' %}
+            .hoe({{ mat_name }}, {{ tool.attack_damage }}F, {{ tool.attack_speed }}F)
+{% elif tool.type == 'sword' %}
+            .sword({{ mat_name }}, {{ tool.attack_damage }}F, {{ tool.attack_speed }}F)
+{% endif %}
+        )
+    );
+{% elif item.custom_class %}
     public static final DeferredItem<{{ item.custom_class }}> {{ item.var_name }} = ITEMS.registerItem("{{ item.id }}", {{ item.custom_class }}::new, {{ item.props }});
 {% else %}
     public static final DeferredItem<Item> {{ item.var_name }} = ITEMS.registerSimpleItem("{{ item.id }}", {{ item.props }});
