@@ -25,6 +25,7 @@ run
 .eclipse
 .vscode
 bin
+.DS_Store
 
 # Python Stuff
 .venv
