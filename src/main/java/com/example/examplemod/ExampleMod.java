@@ -33,6 +33,8 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
@@ -175,6 +177,15 @@ public class ExampleMod {
             )
         );
 
+    public static final DeferredItem<Item> CORGI_SPAWN_EGG =
+        ITEMS.register("corgi_spawn_egg", (registryName) ->
+            new net.minecraft.world.item.SpawnEggItem(
+                ModEntities.CORGI.get(),
+                new Item.Properties().setId(
+                    net.minecraft.resources.ResourceKey.create(
+                        net.minecraft.core.registries.Registries.ITEM, registryName)))
+        );
+
     // sounds
     public static final DeferredRegister<SoundEvent> SOUNDS =
             DeferredRegister.create(Registries.SOUND_EVENT, "examplemod");
@@ -205,6 +216,7 @@ public class ExampleMod {
                         output.accept(TRANSMUTATION_WAND.get());
                         output.accept(TRANSMUTATION_WAND_HANDLE.get());
                         output.accept(TRANSMUTATION_WAND_HEAD.get());
+                        output.accept(CORGI_SPAWN_EGG.get());
                     }).build());
 
     // The constructor for the mod class is the first code that is run when your mod is loaded.
@@ -217,6 +229,15 @@ public class ExampleMod {
         NeoForge.EVENT_BUS.register(BlockDropHandler.class);
         // Register our interactions handler        
         NeoForge.EVENT_BUS.register(PlayerInteractions.class);
+
+        // register custom entities
+		ModEntities.register(modEventBus);
+        
+        // Client-only: register renderers
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modEventBus.addListener((EntityRenderersEvent.RegisterRenderers e) ->
+            ExampleModClient.onRegisterRenderers(e));
+        }
 
         // Register your sounds
         SOUNDS.register(modEventBus);

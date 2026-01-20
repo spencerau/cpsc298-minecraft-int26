@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -92,6 +93,41 @@ public class PlayerInteractions {
                     0.01                  // Speed (motion)
                 );
                 
+                // Spawn a Corgi just above the block (server-side)
+                if (world instanceof ServerLevel server) {
+                    var corgi = ModEntities.CORGI.get().create(server, net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
+                    if (corgi != null) {
+                        // position
+                        var p = Vec3.atBottomCenterOf(pos).add(0.0, 1.0, 0.0);
+                        corgi.setPos(p);                      // set x/y/z
+        
+                        // face the player (yaw) and keep pitch flat
+                        corgi.setYRot(player.getYRot());
+                        corgi.setXRot(0.0F);
+        
+                        // sync body/head rotation so it looks the way it's facing
+                        if (corgi instanceof net.minecraft.world.entity.LivingEntity living) {
+                            living.setYBodyRot(corgi.getYRot());
+                            living.setYHeadRot(corgi.getYRot());
+                        }
+        
+                        // don't let us die
+                        corgi.setPersistenceRequired();
+        
+                        // custom name
+                        RandomSource random = world.getRandom();
+                        String name = random.nextBoolean() ? "Sandie" : "Nova";
+                        corgi.setCustomName(Component.literal(name));
+        
+                        // auto-tame and start off not sitting
+                        if (corgi instanceof net.minecraft.world.entity.animal.wolf.Wolf wolf) {
+                            wolf.tame(player);
+                            wolf.setOrderedToSit(false);
+                        }
+        
+                        server.addFreshEntity(corgi);
+                    }
+                }
             }
             event.setCanceled(true);
         }

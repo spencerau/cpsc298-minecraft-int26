@@ -21,5 +21,7 @@
 
   "item.examplemod.transmutation_wand_handle": "Transmutation Wand Handle",
   "item.examplemod.transmutation_wand_head": "Transmutation Wand Head",
-  "item.examplemod.transmutation_wand": "Transmutation Wand"
+  "item.examplemod.transmutation_wand": "Transmutation Wand",
+
+  "item.examplemod.corgi_spawn_egg": "Corgi Spawn Egg"
 }
