@@ -43,6 +43,23 @@ items:
       attack_damage: 99.0
       attack_speed: 1.6
 
+  - id: dupont_pickaxe
+    display_name: DuPont Pickaxe
+    texture: dupont_pickaxe
+    stack_size: 1
+    tool:
+      type: pickaxe
+      material:
+        name: GOD_TIER
+        incorrect_for_tag: INCORRECT_FOR_NETHERITE_TOOL
+        durability: 9999
+        speed: 100.0
+        attack_bonus: 25.0
+        enchantability: 30
+        repair_tag: PLANKS
+      attack_damage: 99.0
+      attack_speed: 1.6
+
   - id: transmutation_wand
     display_name: Transmutation Wand
     texture: transmutation_wand
