@@ -2,9 +2,13 @@
   "_comment": "{{ autogen_comment }}"
 {%- for sound in sounds %},
   "{{ sound.id }}": {
-    "subtitle": "sound.{{ modid }}.{{ sound.id }}",
+    "category": "{{ sound.category }}",
     "sounds": [
-      "{{ modid }}:{{ sound.file }}"
+      {
+        "name": "{{ sound.file }}",
+        "volume": {{ sound.volume }},
+        "pitch": {{ sound.pitch }}
+      }
     ]
   }
 {%- endfor %}

@@ -1,4 +1,5 @@
 import json
+import shutil
 from pathlib import Path
 from typing import Dict, List
 from jinja2 import Environment, FileSystemLoader
@@ -278,10 +279,21 @@ class JSONGenerator:
         for sound in sounds:
             sounds_with_files.append({
                 'id': sound['id'],
-                'file': sound.get('file', sound['id'])
+                'file': sound.get('file', sound['id']),
+                'category': sound.get('category', 'neutral'),
+                'volume': sound.get('volume', 1.0),
+                'pitch': sound.get('pitch', 1.0)
             })
         
         sounds_dir = self.assets_path / "sounds"
+        source_sounds_dir = self.project_root / "assets" / "sounds"
+
+        if (not sounds_dir.exists() or not any(sounds_dir.iterdir())) and source_sounds_dir.exists():
+            utils.ensure_dir(sounds_dir)
+            for sound_file in source_sounds_dir.iterdir():
+                if sound_file.is_file():
+                    shutil.copy2(sound_file, sounds_dir / sound_file.name)
+
         if not sounds_dir.exists() or not any(sounds_dir.iterdir()):
             print("  [INFO] No sound files found in assets; skipping sounds.json generation.")
             return

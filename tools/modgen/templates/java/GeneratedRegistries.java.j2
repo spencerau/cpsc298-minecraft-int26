@@ -10,6 +10,9 @@ public class GeneratedRegistries {
     public static void init() {
         GeneratedItems.init();
         GeneratedBlocks.init();
+{% if has_sounds %}
+        GeneratedSounds.init();
+{% endif %}
         GeneratedCreativeTabs.init();
     }
 }

@@ -23,14 +23,16 @@ class JavaGenerator:
         
         items = spec.get('items', [])
         blocks = spec.get('blocks', [])
+        sounds = spec.get('sounds', [])
         creative_tab = spec.get('creative_tab')
         
         self.generate_items_class(items)
         self.generate_blocks_class(blocks)
-        self.generate_registries_class(items, blocks)
+        self.generate_sounds_class(sounds)
+        self.generate_registries_class(items, blocks, sounds)
         self.generate_creative_tabs_class(creative_tab, items, blocks)
         self.generate_custom_stubs(items, blocks)
-        self.generate_player_interactions(items, blocks)
+        self.generate_player_interactions(items, blocks, sounds)
     
     def generate_items_class(self, items: List[Dict]):
         template = self.env.get_template('GeneratedItems.java.j2')
@@ -103,14 +105,40 @@ class JavaGenerator:
         path = self.java_src / "generated" / "GeneratedBlocks.java"
         utils.write_file(path, code)
     
-    def generate_registries_class(self, items: List[Dict], blocks: List[Dict]):
+    def generate_registries_class(self, items: List[Dict], blocks: List[Dict], sounds: List[Dict]):
         template = self.env.get_template('GeneratedRegistries.java.j2')
         
         code = template.render(
-            package=self.generated_pkg
+            package=self.generated_pkg,
+            has_sounds=bool(sounds)
         )
         
         path = self.java_src / "generated" / "GeneratedRegistries.java"
+        utils.write_file(path, code)
+
+    def generate_sounds_class(self, sounds: List[Dict]):
+        if not sounds:
+            return
+
+        template = self.env.get_template('GeneratedSounds.java.j2')
+
+        sounds_data = []
+        for sound in sounds:
+            sounds_data.append({
+                'id': sound['id'],
+                'file': sound.get('file', sound['id']),
+                'var_name': sound['id'].upper()
+            })
+
+        code = template.render(
+            package=self.generated_pkg,
+            base_package=self.base_package,
+            modid=self.modid,
+            mod_class=self.mod_class,
+            sounds=sounds_data
+        )
+
+        path = self.java_src / "generated" / "GeneratedSounds.java"
         utils.write_file(path, code)
     
     def generate_creative_tabs_class(self, creative_tab: Optional[Dict], items: List[Dict], blocks: List[Dict]):
@@ -263,11 +291,9 @@ class JavaGenerator:
         
         return "BlockBehaviour.Properties.of()" + ('.' + '.'.join(props) if props else '')
     
-    def generate_player_interactions(self, items: List[Dict], blocks: List[Dict]):
-        """Generate PlayerInteractions class for transmutation wands and other item interactions"""
+    def generate_player_interactions(self, items: List[Dict], blocks: List[Dict], sounds: List[Dict]):
         template = self.env.get_template('PlayerInteractions.java.j2')
         
-        # Collect all transmutations from items
         transmutations = []
         has_transmutations = False
         
@@ -278,13 +304,11 @@ class JavaGenerator:
                     from_block = trans['from']
                     to_block = trans['to']
                     
-                    # Parse block references (minecraft:copper_ore or examplemod:cheese_block)
                     if ':' in from_block:
                         from_ns, from_id = from_block.split(':', 1)
                         if from_ns == 'minecraft':
                             from_ref = f"Blocks.{from_id.upper()}"
                         else:
-                            # Check if it's a block (in blocks list)
                             is_block = any(b['id'] == from_id for b in blocks)
                             if is_block:
                                 from_ref = f"GeneratedBlocks.{from_id.upper()}.get()"
@@ -298,7 +322,6 @@ class JavaGenerator:
                         if to_ns == 'minecraft':
                             to_ref = f"Blocks.{to_id.upper()}"
                         else:
-                            # Check if it's a block (in blocks list)
                             is_block = any(b['id'] == to_id for b in blocks)
                             if is_block:
                                 to_ref = f"GeneratedBlocks.{to_id.upper()}.get()"
@@ -313,11 +336,48 @@ class JavaGenerator:
                         'message': trans['message']
                     })
         
+        sound_interactions = []
+        for sound in sounds:
+            block_id = sound.get('play_on_right_click_block')
+            if not block_id:
+                continue
+
+            if ':' in block_id:
+                block_ns, block_name = block_id.split(':', 1)
+                if block_ns == 'minecraft':
+                    block_ref = f"Blocks.{block_name.upper()}"
+                else:
+                    block_ref = f"GeneratedBlocks.{block_name.upper()}.get()"
+            else:
+                block_ref = f"GeneratedBlocks.{block_id.upper()}.get()"
+
+            particle = sound.get('particle', {}) or {}
+            spread = particle.get('spread', [0.3, 0.3, 0.3])
+            if not isinstance(spread, list) or len(spread) != 3:
+                spread = [0.3, 0.3, 0.3]
+
+            sound_interactions.append({
+                'block_ref': block_ref,
+                'sound_var': sound['id'].upper(),
+                'volume': sound.get('volume', 1.0),
+                'pitch': sound.get('pitch', 1.0),
+                'sound_source': str(sound.get('sound_source', 'blocks')).upper(),
+                'require_empty_hand': sound.get('require_empty_hand', True),
+                'particle_type': str(particle.get('type', 'heart')).upper(),
+                'particle_count': particle.get('count', 5),
+                'particle_spread_x': spread[0],
+                'particle_spread_y': spread[1],
+                'particle_spread_z': spread[2],
+                'particle_speed': particle.get('speed', 0.01),
+                'particle_y_offset': particle.get('y_offset', 1.0)
+            })
+
         code = template.render(
             base_package=self.base_package,
             mod_class=self.mod_class,
             has_transmutations=has_transmutations,
-            transmutations=transmutations
+            transmutations=transmutations,
+            sound_interactions=sound_interactions
         )
         
         path = self.java_src / "generated" / "PlayerInteractions.java"

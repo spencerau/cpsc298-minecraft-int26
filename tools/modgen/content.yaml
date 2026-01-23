@@ -223,3 +223,15 @@ creative_tab:
 sounds:
   - id: corgi_bark
     file: corgi_bark
+    category: neutral
+    volume: 1.0
+    pitch: 1.0
+    play_on_right_click_block: examplemod:corgi_dispenser_block
+    sound_source: neutral
+    require_empty_hand: true
+    particle:
+      type: heart
+      count: 5
+      spread: [0.3, 0.3, 0.3]
+      speed: 0.01
+      y_offset: 1.0
